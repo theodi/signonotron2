@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 #ruby=ruby-1.9.3
 #ruby-gemset=quirkafleeg-signonotron2
 
-gem 'rails', '3.2.13'
+gem 'rails', '~> 3.2.13'
 
 group :passenger_compatibility do
   gem 'rake', '0.9.2'
@@ -16,7 +16,7 @@ gem 'paginate_alphabetically', '0.4.0', git: "https://github.com/edendevelopment
 gem 'mysql2'
 gem 'aws-ses', require: 'aws/ses'
 gem 'jquery-rails'
-gem 'exception_notification'
+gem 'exception_notification', '~> 2.6.1'
 gem 'plek', '1.4.0'
 gem 'json', '1.7.7'
 
