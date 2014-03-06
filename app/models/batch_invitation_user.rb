@@ -4,12 +4,14 @@ class BatchInvitationUser < ActiveRecord::Base
   validates :outcome, inclusion: { :in => [nil, "success", "failed", "skipped"] }
 
   scope :processed, where("outcome IS NOT NULL")
+  scope :unprocessed, where("outcome IS NULL")
   scope :failed, where(outcome: "failed")
 
   def invite(inviting_user, applications_and_permissions)
     attributes = {
       name: self.name,
       email: self.email,
+      organisation_id: batch_invitation.organisation_id,
       permissions_attributes: applications_and_permissions
     }
     if User.find_by_email(self.email)

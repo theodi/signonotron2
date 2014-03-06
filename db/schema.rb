@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140123130652) do
+ActiveRecord::Schema.define(:version => 20140220150716) do
 
   create_table "batch_invitation_users", :force => true do |t|
     t.integer  "batch_invitation_id"
@@ -30,25 +30,10 @@ ActiveRecord::Schema.define(:version => 20140123130652) do
     t.datetime "created_at",                   :null => false
     t.datetime "updated_at",                   :null => false
     t.integer  "user_id",                      :null => false
+    t.integer  "organisation_id"
   end
 
   add_index "batch_invitations", ["outcome"], :name => "index_batch_invitations_on_outcome"
-
-  create_table "delayed_jobs", :force => true do |t|
-    t.integer  "priority",   :default => 0
-    t.integer  "attempts",   :default => 0
-    t.text     "handler"
-    t.text     "last_error"
-    t.datetime "run_at"
-    t.datetime "locked_at"
-    t.datetime "failed_at"
-    t.string   "locked_by"
-    t.string   "queue"
-    t.datetime "created_at",                :null => false
-    t.datetime "updated_at",                :null => false
-  end
-
-  add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
   create_table "oauth_access_grants", :force => true do |t|
     t.integer  "resource_owner_id", :null => false
@@ -79,18 +64,32 @@ ActiveRecord::Schema.define(:version => 20140123130652) do
   add_index "oauth_access_tokens", ["token"], :name => "index_oauth_access_tokens_on_token", :unique => true
 
   create_table "oauth_applications", :force => true do |t|
-    t.string   "name",         :null => false
-    t.string   "uid",          :null => false
-    t.string   "secret",       :null => false
-    t.string   "redirect_uri", :null => false
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.string   "name",                                    :null => false
+    t.string   "uid",                                     :null => false
+    t.string   "secret",                                  :null => false
+    t.string   "redirect_uri",                            :null => false
+    t.datetime "created_at",                              :null => false
+    t.datetime "updated_at",                              :null => false
     t.string   "home_uri"
     t.string   "description"
+    t.boolean  "supports_push_updates", :default => true
   end
 
   add_index "oauth_applications", ["name"], :name => "unique_application_name", :unique => true
   add_index "oauth_applications", ["uid"], :name => "index_oauth_applications_on_uid", :unique => true
+
+  create_table "organisations", :force => true do |t|
+    t.string   "slug",              :null => false
+    t.string   "name",              :null => false
+    t.string   "organisation_type", :null => false
+    t.string   "abbreviation"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+    t.string   "ancestry"
+  end
+
+  add_index "organisations", ["ancestry"], :name => "index_organisations_on_ancestry"
+  add_index "organisations", ["slug"], :name => "index_organisations_on_slug", :unique => true
 
   create_table "permissions", :force => true do |t|
     t.integer  "user_id"
@@ -108,8 +107,9 @@ ActiveRecord::Schema.define(:version => 20140123130652) do
   create_table "supported_permissions", :force => true do |t|
     t.integer  "application_id"
     t.string   "name"
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
+    t.boolean  "delegatable",    :default => false
   end
 
   add_index "supported_permissions", ["application_id", "name"], :name => "index_supported_permissions_on_application_id_and_name", :unique => true
@@ -146,11 +146,14 @@ ActiveRecord::Schema.define(:version => 20140123130652) do
     t.string   "unconfirmed_email"
     t.string   "role",                                 :default => "normal"
     t.datetime "password_changed_at"
+    t.integer  "organisation_id"
+    t.boolean  "api_user",                             :default => false,    :null => false
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["invitation_token"], :name => "index_users_on_invitation_token"
   add_index "users", ["invited_by_id"], :name => "index_users_on_invited_by_id"
+  add_index "users", ["organisation_id"], :name => "index_users_on_organisation_id"
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 
 end

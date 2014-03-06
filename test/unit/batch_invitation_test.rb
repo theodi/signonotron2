@@ -4,7 +4,7 @@ class BatchInvitationTest < ActiveSupport::TestCase
   setup do
     ActionMailer::Base.deliveries = []
 
-    @app = FactoryGirl.create(:application)
+    @app = create(:application)
 
     permissions_attributes = {
       0 => {
@@ -13,9 +13,16 @@ class BatchInvitationTest < ActiveSupport::TestCase
         permissions: ["signin"]
       }
     }
-    @bi = FactoryGirl.create(:batch_invitation, applications_and_permissions: permissions_attributes)
-    @user_a = FactoryGirl.create(:batch_invitation_user, name: "A", email: "a@m.com", batch_invitation: @bi)
-    @user_b = FactoryGirl.create(:batch_invitation_user, name: "B", email: "b@m.com", batch_invitation: @bi)
+    @bi = create(:batch_invitation, applications_and_permissions: permissions_attributes)
+    @user_a = create(:batch_invitation_user, name: "A", email: "a@m.com", batch_invitation: @bi)
+    @user_b = create(:batch_invitation_user, name: "B", email: "b@m.com", batch_invitation: @bi)
+  end
+
+  should "can belong to an organisation" do
+    organisation = create(:organisation)
+    bi = create(:batch_invitation, organisation: organisation, applications_and_permissions: {})
+
+    assert_equal bi.organisation, organisation
   end
 
   context "perform" do
@@ -47,7 +54,7 @@ class BatchInvitationTest < ActiveSupport::TestCase
 
     context "one of the users already exists" do
       setup do
-        @user = FactoryGirl.create(:user, name: "Arthur Dent", email: "a@m.com")
+        @user = create(:user, name: "Arthur Dent", email: "a@m.com")
         @bi.perform
       end
 
@@ -60,9 +67,9 @@ class BatchInvitationTest < ActiveSupport::TestCase
       end
 
       should "skip that user entirely, including not altering permissions" do
-        app = FactoryGirl.create(:application)
-        another_app = FactoryGirl.create(:application)
-        FactoryGirl.create(:supported_permission, application_id: another_app.id, name: "foo")
+        app = create(:application)
+        another_app = create(:application)
+        create(:supported_permission, application_id: another_app.id, name: "foo")
         @user.grant_permissions(another_app, ["signin", "foo"])
 
         permissions_attributes = {
@@ -94,7 +101,7 @@ class BatchInvitationTest < ActiveSupport::TestCase
     end
 
     context "arbitrary error occurs" do
-      should "mark it as failed and pass the error on for DelayedJob to record the error details" do
+      should "mark it as failed and pass the error on for the worker to record the error details" do
         BatchInvitationUser.any_instance.expects(:invite).raises("ArbitraryError")
 
         assert_raises "ArbitraryError" do
@@ -113,6 +120,20 @@ class BatchInvitationTest < ActiveSupport::TestCase
       should "create the other users" do
         assert_nil User.find_by_email("a@m.com")
         assert_not_nil User.find_by_email("b@m.com")
+      end
+    end
+
+    context "idempotence" do
+      should "not re-invite users that have already been processed" do
+        create(:user, :email => @user_a.email)
+        @user_a.update_column(:outcome, "success")
+
+        @bi.perform
+        assert_equal 1, ActionMailer::Base.deliveries.size
+
+        # Assert user_a status hasn't been set to skipped.
+        @user_a.reload
+        assert_equal "success", @user_a.outcome
       end
     end
   end

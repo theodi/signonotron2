@@ -7,7 +7,7 @@ class Admin::BatchInvitationsControllerTest < ActionController::TestCase
   end
 
   setup do
-    @user = FactoryGirl.create(:user, role: "admin")
+    @user = create(:admin_user)
     sign_in @user
   end
 
@@ -20,8 +20,8 @@ class Admin::BatchInvitationsControllerTest < ActionController::TestCase
 
     context "some batches created recently" do
       setup do
-        @bi = FactoryGirl.create(:batch_invitation)
-        FactoryGirl.create(:batch_invitation_user, batch_invitation: @bi)
+        @bi = create(:batch_invitation)
+        create(:batch_invitation_user, batch_invitation: @bi)
       end
 
       should "show a table summarising them" do
@@ -31,11 +31,18 @@ class Admin::BatchInvitationsControllerTest < ActionController::TestCase
         assert_select "table.recent-batches tbody td", "In progress. 0 of 1 users processed."
       end
     end
+
+    should "allow selection of an organisation to invite users to" do
+      organisation = create(:organisation)
+      get :new
+
+      assert_select "#batch_invitation_organisation_id option", organisation.name
+    end
   end
 
   context "POST create" do
     should "create a BatchInvitation and BatchInvitationUsers" do
-      app = FactoryGirl.create(:application)
+      app = create(:application)
       permissions_attributes = {
         0 => {
           "application_id" => "#{app.id}",
@@ -60,9 +67,20 @@ class Admin::BatchInvitationsControllerTest < ActionController::TestCase
       assert_equal expected_names_and_emails, bi.batch_invitation_users.map { |u| [u.name, u.email] }
     end
 
+    should "store the organisation to invite users to" do
+      post :create, user: { permissions_attributes: {} },
+        batch_invitation: { user_names_and_emails: users_csv, organisation_id: 3 }
+
+      bi = BatchInvitation.last
+
+      assert_not_nil bi
+      assert_equal 3, bi.organisation_id
+    end
+
     should "queue a job to do the processing" do
-      Delayed::Job.expects(:enqueue).with(kind_of(BatchInvitation::Job))
+      jobs = BatchInvitation::Worker.jobs.size
       post :create, batch_invitation: { user_names_and_emails: users_csv }, user: { permissions_attributes: {} }
+      assert_equal jobs + 1, BatchInvitation::Worker.jobs.size
     end
 
     should "send an email to signon-alerts" do
@@ -129,9 +147,9 @@ class Admin::BatchInvitationsControllerTest < ActionController::TestCase
 
   context "GET show" do
     setup do
-      @bi = FactoryGirl.create(:batch_invitation)
-      @user1 = FactoryGirl.create(:batch_invitation_user, name: "A", email: "a@m.com", batch_invitation: @bi)
-      @user2 = FactoryGirl.create(:batch_invitation_user, name: "B", email: "b@m.com", batch_invitation: @bi)
+      @bi = create(:batch_invitation)
+      @user1 = create(:batch_invitation_user, name: "A", email: "a@m.com", batch_invitation: @bi)
+      @user2 = create(:batch_invitation_user, name: "B", email: "b@m.com", batch_invitation: @bi)
     end
 
     should "list the users being created" do
@@ -166,7 +184,7 @@ class Admin::BatchInvitationsControllerTest < ActionController::TestCase
       end
 
       should "show the state of the processing" do
-        assert_select "div.alert", /Success/i
+        assert_select "div.alert", "2 users processed."
       end
 
       should "no longer include the meta refresh" do

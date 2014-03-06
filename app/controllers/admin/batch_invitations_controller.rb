@@ -1,7 +1,10 @@
 require 'csv'
 
-class Admin::BatchInvitationsController < Admin::BaseController
+class Admin::BatchInvitationsController < ApplicationController
   include UserPermissionsControllerMethods
+  before_filter :authenticate_user!
+  authorize_resource
+
   helper_method :applications_and_permissions
   helper_method :recent_batch_invitations
 
@@ -11,7 +14,8 @@ class Admin::BatchInvitationsController < Admin::BaseController
 
   def create
     @batch_invitation = BatchInvitation.new(user: current_user,
-        applications_and_permissions: translate_faux_signin_permission(params[:user])[:permissions_attributes])
+      organisation_id: params[:batch_invitation][:organisation_id],
+      applications_and_permissions: translate_faux_signin_permission(params[:user])[:permissions_attributes])
 
     unless file_uploaded?
       flash[:alert] = "You must upload a file"

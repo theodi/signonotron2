@@ -1,29 +1,42 @@
-class Superadmin::SupportedPermissionsController < Superadmin::BaseController
+class Superadmin::SupportedPermissionsController < ApplicationController
+  before_filter :authenticate_user!
+  load_and_authorize_resource :application, class: "Doorkeeper::Application"
+  load_and_authorize_resource :supported_permission, through: :application, class: "Doorkeeper::Application"
+
   respond_to :html
 
-  def index
-    @application = ::Doorkeeper::Application.find(params[:application_id])
+  def new
+    @supported_permission = @application.supported_permissions.build
   end
 
-  def new
-    @application = ::Doorkeeper::Application.find(params[:application_id])
+  def edit
+    @supported_permission = SupportedPermission.find(params[:id])
   end
 
   def create
-    @application = ::Doorkeeper::Application.find(params[:application_id])
-    newPermission = params[:post][:permission]
-    if newPermission.blank?
-      redirect_to superadmin_application_supported_permissions_path, 
-        alert: "Failed to add permission to #{@application.name}. Field was blank."
+    @supported_permission = @application.supported_permissions.build(supported_permission_parameters)
+    if @supported_permission.save
+      redirect_to superadmin_application_supported_permissions_path,
+        notice: "Successfully added permission #{@supported_permission.name} to #{@application.name}"
     else
-      begin
-        SupportedPermission.create(:application_id => params[:application_id], :name => newPermission)
-        redirect_to superadmin_application_supported_permissions_path, 
-          notice: "Successfully added permission #{newPermission} to #{@application.name}"
-      rescue ActiveRecord::RecordNotUnique => exception
-        redirect_to superadmin_application_supported_permissions_path, 
-          alert: "Failed to add permission #{newPermission} to #{@application.name} as it already exists"
-      end
+      render :new
     end
   end
+
+  def update
+    @supported_permission = SupportedPermission.find(params[:id])
+    if @supported_permission.update_attributes(supported_permission_parameters)
+      redirect_to superadmin_application_supported_permissions_path,
+        notice: "Successfully updated permission #{@supported_permission.name}"
+    else
+      render :edit
+    end
+  end
+
+private
+
+  def supported_permission_parameters
+    params[:supported_permission].slice(:name, :delegatable)
+  end
+
 end

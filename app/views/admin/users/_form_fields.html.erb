@@ -13,7 +13,7 @@
       <span class="help-inline">Changes are pending until confirmation via link in an email.</span>
     <% end %>
   <% end %>
-</p>  
+</p>
 
 <% if f.object.unconfirmed_email.present? %>
   <p>
@@ -27,15 +27,20 @@
   </p>
 <% end %>
 
-<% if current_user.has_role?("superadmin") %>
+<% if can? :assign_role, User %>
   <p>
     <%= f.label :role %>
-    <%= f.select :role, options_for_select(User.roles.to_a, f.object.role) %>
+    <%= f.select :role, options_for_select(User.roles.map(&:humanize).zip(User.roles), f.object.role), {}, class: "chzn-select" %>
     <span class="help-inline">
       Admins can create and edit normal users. Superadmins can create and edit all user types and edit applications.
     </span>
   </p>
 <% end %>
+
+<p>
+  <%= f.label :organisation_id, "Organisation" %>
+  <%= f.select :organisation_id, organisation_options(f), organisation_select_options, { class: "chzn-select" } %>
+</p>
 
 <h2>Permissions</h2>
 

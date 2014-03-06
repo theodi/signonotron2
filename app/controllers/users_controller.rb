@@ -2,16 +2,17 @@ class UsersController < ApplicationController
   before_filter :authenticate_user!, :except => :show
   doorkeeper_for :show
 
+  # it's okay for current_user to modify own attributes
+  skip_authorization_check
+
   def show
     relevant_permission.synced! if relevant_permission
     respond_to do |format|
       format.json do
-        render json: current_resource_owner.to_sensible_json(application_making_request)
+        presenter = UserOAuthPresenter.new(current_resource_owner, application_making_request)
+        render json: presenter.as_hash.to_json
       end
     end
-  end
-
-  def edit
   end
 
   def update

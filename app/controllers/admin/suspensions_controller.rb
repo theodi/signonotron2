@@ -1,30 +1,27 @@
-class Admin::SuspensionsController < Admin::BaseController
-  before_filter :set_user
+class Admin::SuspensionsController < ApplicationController
+  before_filter :authenticate_user!
+  load_resource :user, parent: false
+  authorize_resource :user, parent:false, only: :edit
 
   respond_to :html
 
-  def edit
-  end
-
   def update
     if params[:user][:suspended] == "1"
+      authorize! :suspend, @user
       succeeded = @user.suspend(params[:user][:reason_for_suspension])
     else
+      authorize! :unsuspend, @user
       succeeded = @user.unsuspend
     end
 
     if succeeded
-      results = SuspensionUpdater.new(@user, @user.applications_used).attempt
-      @successes, @failures = results[:successes], results[:failures]
-      flash[:notice] = "#{@user.name} is now #{@user.suspended? ? "suspended" : "active"}"
+      ReauthEnforcer.perform_on(@user)
+      flash[:notice] = "#{@user.name} is now #{@user.suspended? ? 'suspended' : 'active'}."
+      redirect_to edit_admin_user_path(@user)
     else
       flash[:alert] = "Failed"
       render :edit
     end
   end
 
-  private
-    def set_user
-      @user = User.find(params[:id])
-    end
 end

@@ -38,9 +38,70 @@ form .offset {
 }
 
 .inline_block {
-  display: inline;  
+  display: inline;
 }
 
 tr.error > td {
   background-color: #f2dede;
+}
+
+.top-buffer {
+  margin-top:20px;
+}
+
+hr.grey {
+  margin: 0px 0px 10px 0px;
+  border-bottom: 1px solid #dddddd;
+}
+
+.right {
+  text-align: right;
+}
+
+.guidance-panel {
+  padding-top: 20px;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+#password-confirmation-guidance {
+  display: none;
+}
+
+#password-result-span, #password-confirmation-result-span {
+  display: none;
+}
+
+.js-enabled #password-guidance {
+  display: none;
+}
+
+.js-enabled .not-strong-enough #password-guidance,
+.js-enabled .not-strong-enough #password-entropy,
+.js-enabled .password-too-short #password-guidance,
+.js-enabled .password-too-short #password-too-short,
+.js-enabled .parts-of-email #password-guidance,
+.js-enabled .parts-of-email #parts-of-email,
+.js-enabled .confirmation-not-matching #password-confirmation-guidance {
+  display: block;
+}
+
+.js-enabled .not-strong-enough #password-result-span,
+.js-enabled .password-too-short #password-result-span,
+.js-enabled .parts-of-email #password-result-span,
+.js-enabled .confirmation-not-matching #password-confirmation-result-span {
+  display: inline;
+  background-color: red;
+}
+
+.js-enabled .good-password #password-result-span,
+.js-enabled .confirmation-matching #password-confirmation-result-span {
+  display: inline;
+  background-color: lightgreen;
+}
+
+.js-enabled #password-entropy,
+.js-enabled #password-too-short,
+.js-enabled #parts-of-email {
+  display: none;
 }

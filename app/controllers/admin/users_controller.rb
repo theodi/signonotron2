@@ -1,35 +1,31 @@
-class Admin::UsersController < Admin::BaseController
+class Admin::UsersController < ApplicationController
   include UserPermissionsControllerMethods
+
+  before_filter :authenticate_user!
+  load_and_authorize_resource
+
   helper_method :applications_and_permissions
 
   respond_to :html
-  before_filter :set_user, only: [:edit, :update, :unlock, :resend_email_change, :cancel_email_change]
 
   def index
-    if params[:filter]
-      @users = User.order("name")
-                    .where("email like ? or name like ?", "%#{params[:filter].strip}%", "%#{params[:filter].strip}%")
-                    .page(params[:page])
-                    .per(100)
+    if params[:filter].present?
+      @users = @users.filter(params[:filter]).page(params[:page]).per(100)
     else
-      @users = User.order("name").alphabetical_group(params[:letter])
+      @users, @sorting_params = @users.alpha_paginate(params[:letter], ALPHABETICAL_PAGINATE_CONFIG)
     end
   end
 
-  def edit
-  end
-
   def update
+    authorize! :read, Organisation.find(params[:user][:organisation_id]) if params[:user][:organisation_id].present?
+
     email_before = @user.email
     if @user.update_attributes(translate_faux_signin_permission(params[:user]), as: current_user.role.to_sym)
       @user.permissions.reload
-      results = PermissionUpdater.new(@user, @user.applications_used).attempt
-      @successes, @failures = results[:successes], results[:failures]
-      if @user.invited_but_not_yet_accepted? && (email_before != @user.email)
-        @user.invite!
-      end 
+      PermissionUpdater.perform_on(@user)
+      @user.invite! if @user.invited_but_not_yet_accepted? && (email_before != @user.email)
 
-      flash[:notice] = "Updated user #{@user.email} successfully"
+      redirect_to admin_users_path, notice: "Updated user #{@user.email} successfully"
     else
       render :edit
     end
@@ -57,8 +53,4 @@ class Admin::UsersController < Admin::BaseController
     redirect_to edit_admin_user_path(@user)
   end
 
-  private
-    def set_user
-      @user = User.find(params[:id])
-    end
 end

@@ -20,7 +20,7 @@ module Signonotron2
     # -- all .rb files in that directory are automatically loaded.
 
     # Custom directories with classes and modules you want to be autoloadable.
-    config.autoload_paths += %W(#{config.root}/lib)
+    config.autoload_paths += Dir["#{config.root}/lib", "#{config.root}/app/presenters"]
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
@@ -36,6 +36,7 @@ module Signonotron2
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
+    I18n.config.enforce_available_locales = true
 
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = "utf-8"
@@ -66,6 +67,9 @@ module Signonotron2
     # In our infrastructure, the protection this would give is provided by nginx, so
     # disabling it solves the above problem and doesn't give us additional risk.
     config.action_dispatch.ip_spoofing_check = false
+
+    # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
+    config.assets.precompile += %w(password-strength-indicator.js)
 
     config.to_prepare do
       Doorkeeper::ApplicationController.layout "application"

@@ -8,7 +8,7 @@
   <%= yield :content_for_head %>
 </head>
 <body>
-
+  <script type="text/javascript">document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
   <div class="navbar navbar-fixed-top" role="banner">
     <div class="navbar-inner">
       <div class="container">
@@ -17,10 +17,10 @@
           <nav role="navigation" class="nav-collapse">
             <ul class="nav">
               <%= nav_link 'Dashboard', root_path %>
-              <% if current_user.has_role?("admin") %>
+              <% if can? :index, User %>
                 <%= nav_link 'Administer users', admin_users_path %>
               <% end %>
-              <% if current_user.has_role?("superadmin") %>
+              <% if can? :read, Doorkeeper::Application %>
                 <%= nav_link 'Administer applications', superadmin_applications_path %>
               <% end %>
             </ul>
@@ -60,6 +60,7 @@
       <p><span class="pull-right">Signon release: <%= CURRENT_RELEASE_SHA %></span></p>
     </footer>
 
+    <%= yield :optional_javascripts if content_for?(:optional_javascripts) %>
   </div> <!-- /container -->
 
 </body>

@@ -1,8 +1,11 @@
 class BatchInvitation < ActiveRecord::Base
   belongs_to :user
+  belongs_to :organisation
   has_many :batch_invitation_users
 
   serialize :applications_and_permissions, Hash
+
+  attr_accessor :user_names_and_emails
 
   validates :outcome, inclusion: { :in => [nil, "success", "fail"] }
   validates :user_id, presence: true
@@ -17,11 +20,11 @@ class BatchInvitation < ActiveRecord::Base
 
   def enqueue
     NoisyBatchInvitation.make_noise(self).deliver
-    Delayed::Job.enqueue(BatchInvitation::Job.new(self.id))
+    Worker.perform_async(self.id)
   end
 
   def perform(options = {})
-    self.batch_invitation_users.each do |bi_user|
+    self.batch_invitation_users.unprocessed.each do |bi_user|
       bi_user.invite(self.user, self.applications_and_permissions)
     end
     self.outcome = "success"
@@ -31,8 +34,9 @@ class BatchInvitation < ActiveRecord::Base
     raise
   end
 
-  class Job < Struct.new(:id)
-    def perform(options = {})
+  class Worker
+    include Sidekiq::Worker
+    def perform(id, options = {})
       BatchInvitation.find(id).perform(options)
     end
   end

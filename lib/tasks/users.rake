@@ -8,7 +8,13 @@ namespace :users do
     end
 
     user = User.invite!(name: ENV['name'].dup, email: ENV['email'].dup)
+    permissions = ENV.fetch('permissions', '').split(',').uniq
+
     applications.each do |application|
+      unsupported_permissions = permissions - application.supported_permission_strings
+      if unsupported_permissions.any?
+        raise UnsupportedPermissionError, "Cannot grant '#{unsupported_permissions.join("', '")}' permission(s), they are not supported by the '#{application.name}' application"
+      end
       user.grant_permission(application, 'signin')
     end
 
@@ -17,6 +23,22 @@ namespace :users do
     puts "              user.email <#{user.email}>"
     puts "              signin permissions for: '#{applications.map(&:name).join(%q{', '})}' "
     puts "              follow this link to set a password: #{invitation_url}"
+  end
+
+  desc "Remind users that their account will get suspended"
+  task :send_suspension_reminders => :environment do
+    with_lock('signon:users:send_suspension_reminders') do
+      count = InactiveUsersSuspensionReminder.new.send_reminders
+      puts "InactiveUsersSuspensionReminder: #{count} users were reminded about account suspension"
+    end
+  end
+
+  desc "Suspend users who have not signed-in for 45 days"
+  task :suspend_inactive => :environment do
+    with_lock('signon:users:suspend_inactive') do
+      count = InactiveUsersSuspender.new.suspend
+      puts "#{count} users were suspended because they had not logged in since #{User::SUSPENSION_THRESHOLD_PERIOD.inspect}"
+    end
   end
 
   desc "Suspend a user's access to the site (specify email in environment)"
