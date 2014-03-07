@@ -1,0 +1,33 @@
+language: ruby
+rvm:
+- 1.9.3
+services:
+- mysql
+- redis
+before_script:
+- mysql -u root -e "create database signonotron2_test;"
+- mysql -u root -e "GRANT ALL PRIVILEGES ON signonotron2_test.* TO signonotron2@localhost
+  IDENTIFIED BY 'signonotron2';"
+- bundle exec rake db:migrate
+after_success:
+- ! '[ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] &&
+  curl -v -X DELETE -u $GITHUB_USER:$GITHUB_PASSWORD "https://api.github.com/repos/$TRAVIS_REPO_SLUG/git/refs/tags/CURRENT"'
+- ! '[ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] &&
+  curl -v -X POST -d ''{"ref":"refs/tags/CURRENT","sha":"''$TRAVIS_COMMIT''"}''  --header
+  "Content-Type:application/json" -u $GITHUB_USER:$GITHUB_PASSWORD "https://api.github.com/repos/$TRAVIS_REPO_SLUG/git/refs"'
+branches:
+  except:
+  - CURRENT
+notifications:
+  email: false
+  irc:
+    channels:
+    - irc.freenode.net#theodi
+    template:
+    - ! '%{repository} %{branch} - %{message} %{build_url}'
+    on_success: change
+    on_failure: always
+env:
+  global:
+  - secure: EjqTE6iQgZylaNh226KNbULqKOLHc3r3+Xdo99Di96B3/jLtyF1PHxr+ZtkBbHK325+rNPl7QsYxudpiBBUvtrGU2vGDFqxuVQ/oCRN5TJzNhQB3pg8UFzMvjQfuViBASiqelZyHnbOe5YWZFUgWxKqjGJsosCGmr9U2ptWEcfI=
+  - secure: bxM84Xa4SlAegT6Cbv46Z8iorBUOWeuhTicsay/NTfP3C8soZB26PMCgN6Dx8ukknR8wLsBWa3vUFRj1dJjg320nEpXHrTk0uN9vqQy4yo80GVhSnNPOlRMUjLp4IpXexeiOW8KOE1a2jlQHiszAeCT9cSYAUGZ33785gL3MhAE=
