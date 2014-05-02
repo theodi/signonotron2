@@ -15,7 +15,8 @@ class User < ActiveRecord::Base
          :zxcvbnable,
          :encryptable,
          :confirmable,
-         :password_expirable
+         :password_expirable,
+         :password_archivable
 
   attr_readonly :uid
 
@@ -40,6 +41,7 @@ class User < ActiveRecord::Base
   scope :filter, lambda { |filter_param| where("users.email like ? OR users.name like ?", "%#{filter_param.strip}%", "%#{filter_param.strip}%") }
   scope :last_signed_in_on, lambda { |date| web_users.not_suspended.where('date(current_sign_in_at) = date(?)', date) }
   scope :last_signed_in_before, lambda { |date| web_users.not_suspended.where('date(current_sign_in_at) < date(?)', date) }
+  scope :last_signed_in_after, lambda { |date| web_users.not_suspended.where('date(current_sign_in_at) >= date(?)', date) }
 
   def generate_uid
     self.uid = UUID.generate
@@ -102,8 +104,6 @@ class User < ActiveRecord::Base
     Statsd.new(::STATSD_HOST).increment("#{::STATSD_PREFIX}.users.created")
   end
 
-  include PasswordMigration
-
 private
 
   def organisation_admin_belongs_to_organisation
@@ -113,11 +113,11 @@ private
   end
 
   def email_is_ascii_only
-    errors.add(:email, "can't contain non-ASCII characters") unless email.ascii_only?
+    errors.add(:email, "can't contain non-ASCII characters") unless email.blank? or email.ascii_only?
   end
 
   def fix_apostrophe_in_email
-    self.email.tr!(%q(’), %q(')) if email_changed?
+    self.email.tr!(%q(’), %q(')) if email.present? and email_changed?
   end
 
 end

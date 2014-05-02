@@ -152,6 +152,7 @@ Devise.setup do |config|
   # an one (and only one) @ exists in the given string. This is mainly
   # to give user feedback and not to assert the e-mail validity.
   # config.email_regexp = /\A[^@]+@[^@]+\z/
+  config.email_regexp = /\A[^@\s]+@([a-z0-9-]+\.)+[a-z0-9]+\z/
 
   # ==> Configuration for :timeoutable
   # The time you want to timeout the user session without activity. After this
@@ -272,10 +273,10 @@ Devise.setup do |config|
   # config.password_regex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/
 
   # How many passwords to keep in archive
-  # config.password_archiving_count = 5
+  config.password_archiving_count = 2
 
   # Deny old password (true, false, count)
-  # config.deny_old_passwords = true
+  config.deny_old_passwords = true
 
   # enable email validation for :secure_validatable. (true, false, validation_options)
   # dependency: need an email validator like rails_email_validator
