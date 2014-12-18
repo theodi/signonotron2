@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 #ruby=ruby-1.9.3
 #ruby-gemset=quirkafleeg-signonotron2
 
-gem 'rails', '3.2.17'
+gem 'rails', '~> 3.2.17'
 
 gem 'kaminari', '0.14.1'
 gem 'alphabetical_paginate', '2.1.0'
@@ -62,6 +62,6 @@ group :test do
 end
 
 group :production do
-  gem 'foreman'
+  gem 'foreman', '< 0.65.0'
   gem 'thin'
 end
