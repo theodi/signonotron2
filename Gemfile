@@ -28,7 +28,7 @@ gem 'devise_security_extension', '0.7.2', git: "https://github.com/alphagov/devi
 gem 'devise_zxcvbn', '1.1.0'
 gem 'devise-async', '0.8.0'
 
-gem 'doorkeeper', '0.6.7'
+gem 'doorkeeper', '~> 0.6'
 gem 'ancestry', '2.0.0'
 gem 'cancan', '1.6.10'
 
