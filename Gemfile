@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 #ruby-gemset=quirkafleeg-signonotron2
 
 gem 'rails', '~> 3.2.17'
+gem 'dotenv-rails'
 
 gem 'kaminari', '0.14.1'
 gem 'alphabetical_paginate', '2.1.0'
@@ -17,8 +18,6 @@ gem 'json', '1.7.7'
 gem 'whenever', '0.7.3', require: false
 
 gem 'uuid'
-
-gem 'dotenv-rails'
 
 # Gems used to provide Authentication and Authorization services.
 gem 'devise', '2.2.5'
