@@ -12,7 +12,7 @@ namespace :applications do
     # Optionally set up supported permissions
     permissions = (ENV['supported_permissions'] || '').split(',')
     permissions.each do |permission|
-      SupportedPermission.create(:application_id => a.id, :name => permission)
+      SupportedPermission.find_or_create_by_application_id_and_name(a.id, permission)
     end
     # Done
     puts "Application '#{a.name}' created."
