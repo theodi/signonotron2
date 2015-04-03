@@ -8,5 +8,10 @@ class CreateKeywordsPermissionForPanopticon < ActiveRecord::Migration
     if panopticon
       SupportedPermission.create!(application: panopticon, name: "keywords")
     end
+
+    publisher = ::Doorkeeper::Application.find_by_name("publisher")
+    if publisher
+      SupportedPermission.create!(application: publisher, name: "keywords")
+    end
   end
 end
