@@ -11,6 +11,7 @@ development: &development
   pool: 5
   username: signonotron2
   password: signonotron2
+  host: <%= ENV['MYSQL_HOST'] ||= "localhost" %>
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -23,6 +24,7 @@ test: &test
   pool: 5
   username: signonotron2
   password: signonotron2
+  host: <%= ENV['MYSQL_HOST'] ||= "localhost" %>
 
 production:
   adapter: mysql2
