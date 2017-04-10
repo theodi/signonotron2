@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 
-#ruby=ruby-1.9.3
-#ruby-gemset=quirkafleeg-signonotron2
+ruby "1.9.3"
 
 gem 'rails', '~> 3.2.17'
 gem 'dotenv-rails'
@@ -23,7 +22,7 @@ gem 'uuid'
 gem 'devise', '2.2.5'
 gem 'devise_invitable', '1.1.5'
 gem 'devise-encryptable', '0.1.1'
-gem 'devise_security_extension', '0.7.2', git: "https://github.com/alphagov/devise_security_extension.git", branch: "graceful_return_to_behaviour"
+gem 'devise_security_extension', git: "https://github.com/alphagov/devise_security_extension.git", branch: "4d14ed4c9ae8f23da0e9d5de2b6b69d9b53cd73d"
 gem 'devise_zxcvbn', '1.1.0'
 gem 'devise-async', '0.8.0'
 
@@ -63,4 +62,5 @@ end
 group :production do
   gem 'foreman', '< 0.65.0'
   gem 'thin'
+  gem "rails_12factor"
 end

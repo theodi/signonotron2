@@ -12,10 +12,9 @@ class RedisClient
 private
 
   def config
-    if ENV['QUIRKAFLEEG_SIGNON_REDIS_HOST']
+    if ENV['REDIS_URL']
       {
-        host:     ENV['QUIRKAFLEEG_SIGNON_REDIS_HOST'],
-        password: ENV['QUIRKAFLEEG_SIGNON_REDIS_PASSWORD'],
+        url:     ENV['REDIS_URL'],
       }
     else
       YAML.load_file(Rails.root.join("config", "redis.yml"))
