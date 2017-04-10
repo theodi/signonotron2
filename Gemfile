@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 
-#ruby=ruby-1.9.3
-#ruby-gemset=quirkafleeg-signonotron2
+ruby "1.9.3"
 
 gem 'rails', '~> 3.2.17'
 gem 'dotenv-rails'
