@@ -4,9 +4,8 @@ redis_config = {
   :namespace => 'signon'
 }
 
-if ENV['QUIRKAFLEEG_SIGNON_REDIS_HOST']
-  redis_config[:host]     = ENV['QUIRKAFLEEG_SIGNON_REDIS_HOST']
-  redis_config[:password] = ENV['QUIRKAFLEEG_SIGNON_REDIS_PASSWORD']
+if ENV['REDIS_URL']
+  redis_config[:url]     = ENV['REDIS_URL']
 end
 
 Sidekiq.configure_client do |config|
