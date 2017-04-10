@@ -95,7 +95,7 @@ GEM
     dotenv-rails (1.0.2)
       dotenv (= 1.0.2)
     erubis (2.7.0)
-    eventmachine (1.0.3)
+    eventmachine (1.2.3)
     factory_girl (4.3.0)
       activesupport (>= 3.0.0)
     factory_girl_rails (4.3.0)
@@ -290,3 +290,9 @@ DEPENDENCIES
   uuid
   webmock (= 1.17.3)
   whenever (= 0.7.3)
+
+RUBY VERSION
+   ruby 1.9.3p551
+
+BUNDLED WITH
+   1.13.7
