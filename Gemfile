@@ -14,7 +14,7 @@ gem 'jquery-rails'
 gem 'airbrake', '3.1.15'
 gem 'plek', '1.7.0'
 gem 'json', '1.7.7'
-gem 'whenever', '0.7.3', require: false
+gem 'whenever', '0.9.7', require: false
 
 gem 'uuid'
 
