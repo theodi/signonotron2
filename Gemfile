@@ -5,7 +5,7 @@ ruby "1.9.3"
 gem 'rails', '~> 3.2.22'
 gem 'dotenv-rails'
 
-gem 'kaminari', '0.14.1'
+gem 'kaminari', '0.17.0'
 gem 'alphabetical_paginate', '2.1.0'
 gem 'mysql2'
 gem 'aws-ses', require: 'aws/ses'
