@@ -6,7 +6,7 @@ gem 'rails', '~> 3.2.22'
 gem 'dotenv-rails'
 
 gem 'kaminari', '0.17.0'
-gem 'alphabetical_paginate', '2.1.0'
+gem 'alphabetical_paginate', '2.3.2'
 gem 'mysql2'
 gem 'aws-ses', require: 'aws/ses'
 gem 'jquery-rails'
