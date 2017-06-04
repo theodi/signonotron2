@@ -42,7 +42,7 @@ group :development do
   gem 'quiet_assets'
 end
 
-gem 'logstasher', '0.4.8'
+gem 'logstasher', '0.9.0'
 
 group :test do
   gem 'capybara', '2.2.1'
