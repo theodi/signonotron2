@@ -55,7 +55,7 @@ group :test do
   gem 'test-unit', '2.5.2', require: false
   gem 'simplecov', '0.9.2'
   gem 'simplecov-rcov', '0.2.3'
-  gem 'ci_reporter', '1.7.0'
+  gem 'ci_reporter', '2.0.0'
   gem 'timecop', '0.8.1'
 end
 
