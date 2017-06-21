@@ -32,7 +32,7 @@ gem 'cancan', '1.6.10'
 
 gem 'gds-api-adapters', '7.11.0'
 gem 'statsd-ruby', '1.4.0'
-gem 'sidekiq', '2.17.2'
+gem 'sidekiq', '2.17.8'
 gem 'sidekiq-statsd', '0.1.2'
 
 gem 'redis', '3.3.3'
