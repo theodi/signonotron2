@@ -48,7 +48,7 @@ group :test do
   gem 'capybara', '2.2.1'
   gem 'poltergeist', '1.5.0'
   gem 'database_cleaner', '0.7.2'
-  gem 'factory_girl_rails', '4.3.0'
+  gem 'factory_girl_rails', '4.8.0'
   gem 'mocha', '0.13.3', require: false
   gem 'shoulda', '3.0.1'
   gem 'webmock', '1.17.3'
