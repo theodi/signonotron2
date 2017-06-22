@@ -20,7 +20,7 @@ gem 'uuid'
 
 # Gems used to provide Authentication and Authorization services.
 gem 'devise', '2.2.5'
-gem 'devise_invitable', '1.1.5'
+gem 'devise_invitable', '1.1.8'
 gem 'devise-encryptable', '0.2.0'
 gem 'devise_security_extension', git: "https://github.com/alphagov/devise_security_extension.git", branch: "4d14ed4c9ae8f23da0e9d5de2b6b69d9b53cd73d"
 gem 'devise_zxcvbn', '1.1.0'
