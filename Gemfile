@@ -56,7 +56,7 @@ group :test do
   gem 'simplecov', '0.14.1'
   gem 'simplecov-rcov', '0.2.3'
   gem 'ci_reporter', '2.0.0'
-  gem 'timecop', '0.9.0'
+  gem 'timecop', '0.9.1'
 end
 
 group :production do
