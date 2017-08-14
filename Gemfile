@@ -53,7 +53,7 @@ group :test do
   gem 'shoulda', '3.0.1'
   gem 'webmock', '1.17.3'
   gem 'test-unit', '2.5.2', require: false
-  gem 'simplecov', '0.14.1'
+  gem 'simplecov', '0.15.0'
   gem 'simplecov-rcov', '0.2.3'
   gem 'ci_reporter', '2.0.0'
   gem 'timecop', '0.9.1'
