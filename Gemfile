@@ -35,7 +35,7 @@ gem 'statsd-ruby', '1.4.0'
 gem 'sidekiq', '2.17.2'
 gem 'sidekiq-statsd', '0.1.5'
 
-gem 'redis', '3.3.3'
+gem 'redis', '3.3.5'
 
 group :development do
   gem 'sqlite3'
