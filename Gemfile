@@ -45,7 +45,7 @@ end
 gem 'logstasher', '0.9.0'
 
 group :test do
-  gem 'capybara', '2.2.1'
+  gem 'capybara', '2.15.2'
   gem 'poltergeist', '1.5.0'
   gem 'database_cleaner', '1.6.1'
   gem 'factory_girl_rails', '4.8.0'
