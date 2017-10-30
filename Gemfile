@@ -47,7 +47,7 @@ gem 'logstasher', '0.9.0'
 group :test do
   gem 'capybara', '2.2.1'
   gem 'poltergeist', '1.5.0'
-  gem 'database_cleaner', '1.6.1'
+  gem 'database_cleaner', '1.6.2'
   gem 'factory_girl_rails', '4.8.0'
   gem 'mocha', '1.2.1', require: false
   gem 'shoulda', '3.0.1'
