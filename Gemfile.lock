@@ -39,9 +39,9 @@ GEM
       i18n (~> 0.6, >= 0.6.4)
       multi_json (~> 1.0)
     addressable (2.3.6)
-    airbrake (3.1.15)
-      builder
-      multi_json
+    airbrake (7.2.1)
+      airbrake-ruby (~> 2.5)
+    airbrake-ruby (2.8.2)
     alphabetical_paginate (2.3.2)
     ancestry (2.0.0)
       activerecord (>= 3.0.0)
@@ -156,7 +156,7 @@ GEM
     mini_portile (0.6.1)
     mocha (1.2.1)
       metaclass (~> 0.0.1)
-    multi_json (1.12.1)
+    multi_json (1.13.1)
     mysql2 (0.3.17)
     nokogiri (1.6.5)
       mini_portile (~> 0.6.0)
@@ -272,7 +272,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  airbrake (= 3.1.15)
+  airbrake (= 7.2.1)
   alphabetical_paginate (= 2.3.2)
   ancestry (= 2.0.0)
   aws-ses
